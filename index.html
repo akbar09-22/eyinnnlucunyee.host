@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>akbar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'arial', sans-serif;
+      background: linear-gradient(to bottom right, #89cff0, #fff1f5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+      background-color: #89cff0;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden;
+      z-index: 1;
+      position: relative;
+    }
+
+    .header {
+      background-color: #89cff0;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .chat-area {
+      padding: 20px;
+      height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: #d8eaf3;
+    }
+
+    .bubble {
+      max-width: 75%;
+      padding: 10px 15px;
+      border-radius: 18px;
+      font-size: 15px;
+      background-color: #c2e0ee;
+      line-height: 1.5;
+      align-self: flex-start;
+      border-bottom-left-radius: 0;
+      animation: slideIn 0.4s ease-in-out;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: none;
+      background-color: #bae4f8;
+      color: white;
+      cursor: pointer;
+      transition: 0.6s;
+    }
+
+    button:hover {
+      background-color: rgb(171, 207, 225);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Area untuk semua stiker */
+    .full-stiker {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .stiker-random {
+      position: absolute;
+      border-radius: 50%;
+      object-fit: cover;
+      transition: transform 0.2s ease;
+      pointer-events: none;
+    }
+
+    .stiker-random:hover {
+      transform: scale(1.1) rotate(5deg);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Area stiker seluruh layar -->
+<div class="full-stiker"></div>
+
+<!-- Konten utama -->
+<div class="container">
+  <div class="header">💬 akbar</div>
+  <div class="chat-area" id="chat"></div>
+  <div class="footer">
+    <button onclick="mulaiChat()">Tampilkan Pesan</button>
+  </div>
+</div>
+
+<script>
+  const chatArea = document.getElementById("chat");
+
+  const pesan = [
+    "Hai eyinnn ini aku akbar...",
+    "Aku cuma mau bilang makasih sama eyinn.",
+    "Makasiii udah nemenin aku yang banyak kurang nya ",
+    "Makasii buat waktu yang kamu kasih ke aku",
+    "Di 3 bulan belakangan ini aku happy bisa kenal eyinn",
+    "tau ga?aku tuh seneng banget pas kamu bikin massage di send the song",
+    "aku juga seneng denger suara kamu ketawa",
+    "apa lagi sebelum bobo,aku seneng seneng bangettttttt",
+    "Kamu orang yang baik,jangan pernah mikir kalau kamu jahat yaaa",
+    "kamu itu pinter,rajin,penyayang",
+    "aku nyaman banget sama kamu,aku takut asing sama kamuu",
+    "Aku gak tau apa yang terjadi sama yang kamu alami,",
+    "Semoga eyinn tetep happy dan ngga ada yang kasar sama kamu",
+    "Aku minta maaf kalau aku pernah jahat sama eyinnn",
+    "oiyaa,aku mau pinjem kata kata kamu di send the song yang kamu buat",
+    "I love you more than you know",
+    "I love you the moon n back",
+    "maaf ya aku ga izin pake foto eyinn",
+    "Cuma itu ajaa. Makasiii yaaa eyinnnn🫶"
+  ];
+
+  function tambahPesan(teks) {
+    const bubble = document.createElement("div");
+    bubble.classList.add("bubble");
+    bubble.innerText = teks;
+    chatArea.appendChild(bubble);
+    chatArea.scrollTop = chatArea.scrollHeight;
+  }
+
+  function mulaiChat() {
+    chatArea.innerHTML = "";
+    let i = 0;
+    function tampil() {
+      if (i < pesan.length) {
+        tambahPesan(pesan[i]);
+        i++;
+        setTimeout(tampil, 1600);
+      }
+    }
+    tampil();
+  }
+
+  function buatStikerGlobalTidakBentrok(kelasWadah) {
+    const wadah = document.querySelector(kelasWadah);
+    const containerRect = document.querySelector(".container").getBoundingClientRect();
+    const ukuranStiker = [105, 135, 155];
+    const jumlahStiker = 30;
+    const stikerPosisi = [];
+
+    for (let i = 0; i < jumlahStiker; i++) {
+      const img = document.createElement("img");
+      img.classList.add("stiker-random");
+      const size = ukuranStiker[Math.floor(Math.random() * ukuranStiker.length)];
+      img.style.width = `${size}px`;
+      img.style.height = `${size}px`;
+      img.src = `${(i % 20) + 1}.png`; // nama file stiker
+
+      let berhasil = false;
+      let maxCoba = 100;
+
+      while (!berhasil && maxCoba-- > 0) {
+        const top = Math.random() * (window.innerHeight - size);
+        const left = Math.random() * (window.innerWidth - size);
+
+        // Cek apakah posisi menabrak container
+        const dalamContainer = (
+          left + size > containerRect.left &&
+          left < containerRect.right &&
+          top + size > containerRect.top &&
+          top < containerRect.bottom
+        );
+
+        // Cek tumpang tindih dengan stiker lain
+        const bentrok = stikerPosisi.some(pos => {
+          const dx = pos.left - left;
+          const dy = pos.top - top;
+          const jarak = Math.sqrt(dx * dx + dy * dy);
+          return jarak < (pos.size + size) / 1.5;
+        });
+
+        if (!dalamContainer && !bentrok) {
+          img.style.top = `${top}px`;
+          img.style.left = `${left}px`;
+          wadah.appendChild(img);
+          stikerPosisi.push({ top, left, size });
+          berhasil = true;
+        }
+      }
+    }
+  }
+
+  buatStikerGlobalTidakBentrok(".full-stiker");
+</script>
+</body>
+</html>
